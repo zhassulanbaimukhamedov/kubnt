@@ -32,8 +32,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t your-dockerhub-username/my-first-site .
-        docker push your-dockerhub-username/my-first-site
+        docker build -t zasulanb/my-first-site .
+        docker push zasulanb/my-first-site
 
     - name: Set up Kubeconfig
       uses: azure/setup-kubectl@v1

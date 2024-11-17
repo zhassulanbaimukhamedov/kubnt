@@ -58,6 +58,14 @@ jobs:
     - name: Apply Kubernetes manifest
       run: kubectl apply -f deployment.yaml
 
+    - name: Debug kubeconfig
+      run: cat ~/.kube/config
+
+
+    - name: Test kubectl connection
+        run: kubectl cluster-info
+
+
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f deployment.yaml

@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: ${{ github.workspace }}/kubeconfig.yaml
 
     steps:
     - name: Checkout code
@@ -40,10 +42,33 @@ jobs:
       
     - name: Configure kubectl
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
-        chmod 600 kubeconfig.yaml
-        export KUBECONFIG=kubeconfig.yaml
-
+        cat << EOF > $KUBECONFIG
+        apiVersion: v1
+        clusters:
+        - cluster:
+            certificate-authority-data: ${{ secrets.CLUSTER_CA_DATA }}
+            server: ${{ secrets.CLUSTER_SERVER }}
+          name: hello-world
+        contexts:
+        - context:
+            cluster: hello-world
+            user: hello-world-admin
+          name: hello-world
+        current-context: hello-world
+        kind: Config
+        preferences: {}
+        users:
+        - name: hello-world-admin
+          user:
+            token: ${{ secrets.KUBE_TOKEN }}
+        EOF
+        chmod 600 $KUBECONFIG
+        
+    - name: Verify kubectl configuration
+      run: |
+        kubectl config view
+        kubectl get nodes
+        
     - name: Update deployment image
       run: |
         kubectl set image deployment/hello-world hello-world=zasulanb/my-first-site:${{ github.sha }}

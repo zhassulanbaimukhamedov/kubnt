@@ -35,14 +35,14 @@ jobs:
         docker build -t zasulanb/my-first-site:${{ github.sha }} .
         docker push zasulanb/my-first-site:${{ github.sha }}
 
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-    - name: Save DigitalOcean kubeconfig
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      
+    - name: Configure kubectl
       run: |
-        doctl kubernetes cluster kubeconfig save do-sfo3-k8s-1-31-1-do-4-sfo3-1731846316192
+        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
+        chmod 600 kubeconfig.yaml
+        export KUBECONFIG=kubeconfig.yaml
 
     - name: Update deployment image
       run: |

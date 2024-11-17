@@ -61,10 +61,8 @@ jobs:
     - name: Debug kubeconfig
       run: cat ~/.kube/config
 
-
-    - name: Test kubectl connection
-        run: kubectl cluster-info
-
+    # - name: Test kubectl connection
+    #     run: kubectl cluster-info
 
     - name: Deploy to Kubernetes
       run: |

@@ -35,10 +35,10 @@ jobs:
         docker build -t zasulanb/my-first-site .
         docker push zasulanb/my-first-site
 
-    - name: Set up Kubeconfig
-      uses: azure/setup-kubectl@v1
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
+    - name: Set up Kubernetes kubeconfig
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
     - name: Deploy to Kubernetes
       run: |
